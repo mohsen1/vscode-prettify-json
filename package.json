@@ -3,7 +3,7 @@
 	"displayName": "prettify-json",
 	"description": "Visual Studio Code Prettify JSON Extension",
 	"version": "0.0.1",
-	"publisher": "MohsenAzimi",
+	"publisher": "mohsen1",
 	"engines": {
 		"vscode": "^0.10.1"
 	},
