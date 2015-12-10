@@ -1,44 +1,59 @@
-import {ExtensionContext, Position, Range, window, commands} from 'vscode';
+  import {
+    ExtensionContext,
+    Position,
+    Range,
+    TextEditorDecorationType,
+    window,
+    commands
+  } from 'vscode';
 
-const LINE_SEPERATOR = /\n|\r\n/;
+  import * as vscode from 'vscode';
 
-// TODO: make this configurable.
-const JSON_SPACE = 4;
+  const jsonlint = require('jsonlint');
 
-export function activate(context: ExtensionContext) {
+  const LINE_SEPERATOR = /\n|\r\n/;
 
-	let disposable = commands.registerCommand('extension.prettifyJSON', () => {
+  // TODO: make this configurable.
+  const JSON_SPACE = 4;
 
-		const editor = window.activeTextEditor;
+  export function activate(context: ExtensionContext) {
 
-		if (!editor) {
-			return;
-		}
+    let disposable = commands.registerCommand('extension.prettifyJSON', () => {
 
-		const raw = editor.document.getText();
-		let json = null;
+      const editor = window.activeTextEditor;
 
-		try {
-			json = JSON.parse(raw);
-		} catch (jsonParseError) {
-			return; // TODO: Handle invalid JSON
-		}
+      if (!editor) {
+        return;
+      }
 
-		let pretty = JSON.stringify(json, null, JSON_SPACE);
+      const raw = editor.document.getText();
+      let json = null;
 
-		editor.edit(builder=> {
-			const start = new Position(0, 0);
-			const lines = raw.split(LINE_SEPERATOR);
-			const end = new Position(lines.length, lines[lines.length - 1].length);
-			const allRange = new Range(start, end);
-			builder.replace(allRange, pretty);
-		}).then(success=> {
+      try {
+        json = jsonlint.parse(raw);
+      } catch (jsonLintError) {
+        const message: string = jsonLintError.message;
+        const lineNumber = parseInt(message.substring(message.indexOf('line ') + 5, message.indexOf(':')), 10);
 
-			// TODO: unselect the text
 
-		});
+        return;
+      }
 
-	});
+      let pretty = JSON.stringify(json, null, JSON_SPACE);
 
-	context.subscriptions.push(disposable);
-}
+      editor.edit(builder=> {
+        const start = new Position(0, 0);
+        const lines = raw.split(LINE_SEPERATOR);
+        const end = new Position(lines.length, lines[lines.length - 1].length);
+        const allRange = new Range(start, end);
+        builder.replace(allRange, pretty);
+      }).then(success=> {
+
+        // TODO: unselect the text
+
+      });
+
+    });
+
+    context.subscriptions.push(disposable);
+  }
