@@ -1,15 +1,15 @@
-import * as vscode from 'vscode';
+import {ExtensionContext, Position, Range, window, commands} from 'vscode';
 
 const LINE_SEPERATOR = /\n|\r\n/;
 
 // TODO: make this configurable.
 const JSON_SPACE = 4;
 
-export function activate(context: vscode.ExtensionContext) {
+export function activate(context: ExtensionContext) {
 
-	let disposable = vscode.commands.registerCommand('extension.prettifyJSON', () => {
+	let disposable = commands.registerCommand('extension.prettifyJSON', () => {
 
-		const editor = vscode.window.activeTextEditor;
+		const editor = window.activeTextEditor;
 
 		if (!editor) {
 			return;
@@ -27,10 +27,10 @@ export function activate(context: vscode.ExtensionContext) {
 		let pretty = JSON.stringify(json, null, JSON_SPACE);
 
 		editor.edit(builder=> {
-			const start = new vscode.Position(0, 0);
+			const start = new Position(0, 0);
 			const lines = raw.split(LINE_SEPERATOR);
-			const end = new vscode.Position(lines.length, lines[lines.length - 1].length);
-			const allRange = new vscode.Range(start, end);
+			const end = new Position(lines.length, lines[lines.length - 1].length);
+			const allRange = new Range(start, end);
 			builder.replace(allRange, pretty);
 		}).then(success=> {
 
