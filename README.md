@@ -2,7 +2,11 @@
 
 > Prettify ugly JSON inside VSCode
 
-<img src="https://raw.githubusercontent.com/mohsen1/vscode-prettify-json/master/screenshot.gif" width=400>
+**[Prettify JSON in Visual Studio Marketplace](https://marketplace.visualstudio.com/items/mohsen1.prettify-json)**
+
+<a href="https://marketplace.visualstudio.com/items/mohsen1.prettify-json"
+  <img src="https://raw.githubusercontent.com/mohsen1/vscode-prettify-json/master/screenshot.gif" width=400>
+</a>
 
 ## Installation
 
