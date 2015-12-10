@@ -2,6 +2,9 @@ import * as vscode from 'vscode';
 
 const LINE_SEPERATOR = /\n|\r\n/;
 
+// TODO: make this configurable.
+const JSON_SPACE = 4;
+
 export function activate(context: vscode.ExtensionContext) {
 
 	let disposable = vscode.commands.registerCommand('extension.prettifyJSON', () => {
@@ -21,7 +24,7 @@ export function activate(context: vscode.ExtensionContext) {
 			return; // TODO: Handle invalid JSON
 		}
 
-		let pretty = JSON.stringify(json, null, 4);
+		let pretty = JSON.stringify(json, null, JSON_SPACE);
 
 		editor.edit(builder=> {
 			const start = new vscode.Position(0, 0);
