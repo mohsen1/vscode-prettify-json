@@ -37,6 +37,7 @@
     "vscode": "0.10.x"
   },
   "dependencies": {
-    "jsonlint": "^1.6.2"
+    "jsonlint": "^1.6.2",
+    "strip-json-comments": "^2.0.0"
   }
 }

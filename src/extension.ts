@@ -1,59 +1,61 @@
-  import {
-    ExtensionContext,
-    Position,
-    Range,
-    TextEditorDecorationType,
-    window,
-    commands
-  } from 'vscode';
+import * as stripComments from 'strip-json-comments';
 
-  import * as vscode from 'vscode';
+import {
+  ExtensionContext,
+  Position,
+  Range,
+  TextEditorDecorationType,
+  window,
+  commands
+} from 'vscode';
 
-  const jsonlint = require('jsonlint');
+import * as vscode from 'vscode';
 
-  const LINE_SEPERATOR = /\n|\r\n/;
+const jsonlint = require('jsonlint');
 
-  // TODO: make this configurable.
-  const JSON_SPACE = 4;
+const LINE_SEPERATOR = /\n|\r\n/;
 
-  export function activate(context: ExtensionContext) {
+// TODO: make this configurable.
+const JSON_SPACE = 4;
 
-    let disposable = commands.registerCommand('extension.prettifyJSON', () => {
+export function activate(context: ExtensionContext) {
 
-      const editor = window.activeTextEditor;
+  let disposable = commands.registerCommand('extension.prettifyJSON', () => {
 
-      if (!editor) {
-        return;
-      }
+    const editor = window.activeTextEditor;
 
-      const raw = editor.document.getText();
-      let json = null;
+    if (!editor) {
+      return;
+    }
 
-      try {
-        json = jsonlint.parse(raw);
-      } catch (jsonLintError) {
-        const message: string = jsonLintError.message;
-        const lineNumber = parseInt(message.substring(message.indexOf('line ') + 5, message.indexOf(':')), 10);
+    const raw = editor.document.getText();
+    let json = null;
+
+    try {
+      json = jsonlint.parse(stripComments(raw));
+    } catch (jsonLintError) {
+      const message: string = jsonLintError.message;
+      const lineNumber = parseInt(message.substring(message.indexOf('line ') + 5, message.indexOf(':')), 10);
 
 
-        return;
-      }
+      return;
+    }
 
-      let pretty = JSON.stringify(json, null, JSON_SPACE);
+    let pretty = JSON.stringify(json, null, JSON_SPACE);
 
-      editor.edit(builder=> {
-        const start = new Position(0, 0);
-        const lines = raw.split(LINE_SEPERATOR);
-        const end = new Position(lines.length, lines[lines.length - 1].length);
-        const allRange = new Range(start, end);
-        builder.replace(allRange, pretty);
-      }).then(success=> {
+    editor.edit(builder=> {
+      const start = new Position(0, 0);
+      const lines = raw.split(LINE_SEPERATOR);
+      const end = new Position(lines.length, lines[lines.length - 1].length);
+      const allRange = new Range(start, end);
+      builder.replace(allRange, pretty);
+    }).then(success=> {
 
-        // TODO: unselect the text
-
-      });
+      // TODO: unselect the text
 
     });
 
-    context.subscriptions.push(disposable);
-  }
+  });
+
+  context.subscriptions.push(disposable);
+}
