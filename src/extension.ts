@@ -4,7 +4,8 @@ import {
   Range,
   TextEditorDecorationType,
   window,
-  commands
+  commands,
+  workspace
 } from 'vscode';
 
 import * as vscode from 'vscode';
@@ -27,6 +28,9 @@ export function activate(context: ExtensionContext) {
       return;
     }
 
+    const editor_config = workspace.getConfiguration('editor');
+    const tab_size = editor_config.get('tabSize', JSON_SPACE);
+
     const raw = editor.document.getText();
     let json = null;
 
@@ -40,7 +44,7 @@ export function activate(context: ExtensionContext) {
       return;
     }
 
-    let pretty = JSON.stringify(json, null, JSON_SPACE);
+    let pretty = JSON.stringify(json, null, tab_size);
 
     editor.edit(builder=> {
       const start = new Position(0, 0);
