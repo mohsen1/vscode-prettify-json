@@ -1,5 +1,3 @@
-import * as stripComments from 'strip-json-comments';
-
 import {
   ExtensionContext,
   Position,
@@ -11,6 +9,7 @@ import {
 
 import * as vscode from 'vscode';
 
+const stripComments = require('strip-json-comments');
 const jsonlint = require('jsonlint');
 
 const LINE_SEPERATOR = /\n|\r\n/;
